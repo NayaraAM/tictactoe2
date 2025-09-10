@@ -1,3 +1,0 @@
-/mnt/d/Leandro/github/tictactoe/build/CMakeFiles/tic_tac_toe.dir
-/mnt/d/Leandro/github/tictactoe/build/CMakeFiles/edit_cache.dir
-/mnt/d/Leandro/github/tictactoe/build/CMakeFiles/rebuild_cache.dir

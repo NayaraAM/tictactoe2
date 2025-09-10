@@ -74,7 +74,7 @@ Main:
 
 ## Instruções de Uso
 
-1. Clone este repositório e compile o código usando um compilador C++ compatível (ex.: `g++`).
+1. Clone este repositório e compile o código usando um compilador C++ compatível (ex.: `g++`), de preferência usando `cmake` ou similar.
 2. Execute o programa. Duas threads serão iniciadas, uma para cada jogador.
 3. Observe a execução do jogo no console. O tabuleiro será exibido a cada jogada, e o resultado final será mostrado após o término do jogo.
 4. Verifique os erros que ocorrem na execução (veja um exemplo abaixo) e corrija-o usando diretivas de sincronização.
