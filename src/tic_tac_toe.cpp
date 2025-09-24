@@ -34,16 +34,22 @@ class TicTacToe {
   }
   
   void display_board() {
-    // Exibir o tabuleiro no console
-    std::cout << "\033[2J\033[1;1H"; // Limpar tela
-    for(int i = 0; i < 3; i++){
-      std::cout<<board[i][0] << "|" << board[i][1]<< "|" << board[i][2] << std::endl;
-      if(i != 2){
-        std::cout << "-----" << std::endl;
-      }
+  // Exibir o tabuleiro no console
+  std::cout << "\033[2J\033[1;1H"; // Limpar tela
+  std::cout << "Tabuleiro:\n";
+  for(int i = 0; i < 3; i++){
+    std::cout << i << "  "; // Índice da linha
+    for(int j = 0; j < 3; j++){
+      std::cout << board[i][j];
+      if(j < 2) std::cout << " | ";
     }
-    std::this_thread::sleep_for(std::chrono::milliseconds(300));
+    std::cout << "\n";
+    if(i < 2) std::cout << "  ---+---+---\n";
   }
+
+  std::cout << "\n"; // Quebra de linha entre tabuleiros
+  std::this_thread::sleep_for(std::chrono::milliseconds(300));
+}
   
   bool make_move(char player, int row, int col) {
     std::unique_lock<std::mutex> lock(mtx);
