@@ -2,6 +2,9 @@
 #include <random>
 #include <thread>
 #include <array>
+#include <mutex>
+#include <condition_variable>
+#include <chrono>
 
 // Classe TicTacToe
 class TicTacToe {
@@ -10,6 +13,9 @@ class TicTacToe {
   char current_player; // Jogador atual ('X' ou 'O')
   bool game_over; // Estado do jogo
   char winner; // Vencedor do jogo
+
+  std::mutex mtx; // Mutex para proteger o tabuleiro
+  std::condition_variable cv; // Variável de condição para alternância de turnos
   
   public:
   TicTacToe() {
@@ -29,35 +35,35 @@ class TicTacToe {
   
   void display_board() {
     // Exibir o tabuleiro no console
-    std::system("clear");
+    std::cout << "\033[2J\033[1;1H"; // Limpar tela
     for(int i = 0; i < 3; i++){
       std::cout<<board[i][0] << "|" << board[i][1]<< "|" << board[i][2] << std::endl;
       if(i != 2){
         std::cout << "-----" << std::endl;
       }
     }
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    std::this_thread::sleep_for(std::chrono::milliseconds(300));
   }
   
   bool make_move(char player, int row, int col) {
-    // Implementar a lógica para realizar uma jogada no tabuleiro
+    std::unique_lock<std::mutex> lock(mtx);
+
+    // Espera até ser a vez do jogador ou o jogo acabar
+    cv.wait(lock, [&](){ return player == current_player || game_over; });
+
+    if(game_over) return false;
+    if(board[row][col] != ' ') return false; // Jogada inválida
+
+    board[row][col] = player; // Marca a jogada
+    display_board();
+
+    game_over = is_game_over();
     if(!game_over){
-      if(board[row][col] != 'X' && board[row][col] != 'O'){
-        board[row][col] = player;
-        display_board();
-        game_over = is_game_over();
-        if(player == 'O'){
-          current_player = 'X';
-        }else{
-          current_player = 'O';
-        }
-        return 1;
-      }else{
-        return 0;
-      }
-    }else{
-      return 1;
+      current_player = (player == 'O') ? 'X' : 'O'; // Alterna jogador
     }
+
+    cv.notify_all(); // Notifica o outro jogador
+    return true;
   }
   
   bool check_win(char player) {
@@ -76,7 +82,7 @@ class TicTacToe {
         return 1;
       }
     }
-    // diagonal
+    // diagonais
     if(player == board[0][0] && player == board[1][1] && player == board[2][2]){
       winner = player;
       return 1;
@@ -102,13 +108,12 @@ class TicTacToe {
   
   bool is_game_over() {
     // Retornar se o jogo terminou
-    if(check_win(current_player)){
+    if(check_win('X') || check_win('O')){
       return 1;
     }else if(check_draw()){
       winner = 'D';
       return 1;
     }else{
-      winner = '-';
       return 0;
     }
   }
@@ -162,7 +167,7 @@ class Player {
     static std::random_device rd;
     static std::mt19937 gen(rd());
     static std::uniform_int_distribution<> distr(0, 2);
-    while(!fim){
+    while(!fim && game.get_winner() == '-'){
       l = distr(gen);
       c = distr(gen);
       fim = game.make_move(symbol, l, c);
