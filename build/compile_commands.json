@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/workspaces/tictactoe2/build",
+  "command": "/usr/bin/g++   -g -std=gnu++11 -o CMakeFiles/tic_tac_toe.dir/src/tic_tac_toe.cpp.o -c /workspaces/tictactoe2/src/tic_tac_toe.cpp",
+  "file": "/workspaces/tictactoe2/src/tic_tac_toe.cpp",
+  "output": "CMakeFiles/tic_tac_toe.dir/src/tic_tac_toe.cpp.o"
+}
+]

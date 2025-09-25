@@ -5,6 +5,11 @@
 #include <mutex>
 #include <condition_variable>
 #include <chrono>
+#include <iomanip>
+#include <sstream>
+#include <ctime>
+
+using namespace std;
 
 // Classe TicTacToe
 class TicTacToe {
@@ -34,20 +39,20 @@ class TicTacToe {
   }
   
   void display_board() {
-  // Exibir o tabuleiro no console
   std::cout << "\033[2J\033[1;1H"; // Limpar tela
-  std::cout << "Tabuleiro:\n";
-  for(int i = 0; i < 3; i++){
-    std::cout << i << "  "; // Índice da linha
-    for(int j = 0; j < 3; j++){
-      std::cout << board[i][j];
-      if(j < 2) std::cout << " | ";
+  std::cout << "Tabuleiro:\n\n";
+
+  for (int i = 0; i < 3; i++) {
+    std::cout << " ";
+    for (int j = 0; j < 3; j++) {
+      std::cout << " " << board[i][j] << " ";
+      if (j < 2) std::cout << "|";
     }
     std::cout << "\n";
-    if(i < 2) std::cout << "  ---+---+---\n";
+    if (i < 2) std::cout << "-------------\n";
   }
 
-  std::cout << "\n"; // Quebra de linha entre tabuleiros
+  std::cout << "\n";
   std::this_thread::sleep_for(std::chrono::milliseconds(300));
 }
   
@@ -181,6 +186,17 @@ class Player {
   }
 };
 
+// Retorna data/hora formatada para exibir nos logs
+string now_str() {
+    auto t = chrono::system_clock::to_time_t(chrono::system_clock::now());
+    ostringstream ss;
+    ss << put_time(localtime(&t), "%d/%m/%Y %H:%M:%S");
+    return ss.str();
+}
+
+
+
+
 // Função principal
 int main() {
   // Inicializar o jogo e os jogadores
@@ -204,6 +220,6 @@ int main() {
   }else{
     std::cout<<" Vencedor: "<<vencedor<<"\n";
   }
-  
+  std::cout << "Data e hora da execução: " << now_str() << "\n";
   return 0;
 }
